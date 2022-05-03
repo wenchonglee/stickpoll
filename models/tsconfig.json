@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "target": "ES6",
+    "moduleResolution": "Node",
+    "strictNullChecks": true,
+    "rootDir": "src"
+  },
+  "include": ["src"]
+}

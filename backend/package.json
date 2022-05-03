@@ -1,0 +1,34 @@
+{
+  "name": "backend",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "@aws-sdk/client-apigatewaymanagementapi": "3.67.0",
+    "@aws-sdk/client-dynamodb": "3.67.0",
+    "@aws-sdk/util-dynamodb": "3.67.0",
+    "@middy/core": "2.5.7",
+    "@middy/http-cors": "2.5.7",
+    "@middy/http-error-handler": "2.5.7",
+    "@middy/http-json-body-parser": "2.5.7",
+    "@stickpoll/models": "0.0.1",
+    "http-errors": "2.0.0",
+    "nanoid": "3.3.2"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "8.10.93",
+    "@types/http-errors": "1.8.2",
+    "@types/jest": "27.4.0",
+    "@types/node": "14.18.9",
+    "jest": "27.4.7",
+    "serve": "13.0.2",
+    "serverless-dynamodb-local": "0.2.40",
+    "serverless-offline": "8.5.0",
+    "serverless-s3-sync": "3.0.0",
+    "serverless-webpack": "5.7.0",
+    "ts-loader": "9.3.0",
+    "webpack": "5.72.0"
+  },
+  "scripts": {
+    "test": "jest --coverage"
+  }
+}

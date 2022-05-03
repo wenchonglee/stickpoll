@@ -1,0 +1,56 @@
+service: stickpoll-aws
+
+plugins:
+  - serverless-s3-sync
+  - serverless-webpack
+  - serverless-dynamodb-local
+  - serverless-offline
+
+provider:
+  name: aws
+  region: "ap-southeast-1"
+  runtime: nodejs14.x
+  environment:
+    WEBSOCKET_API: !Ref WebsocketsApi
+    STAGE: ${opt:stage, 'dev'}
+  iam:
+    role:
+      statements: # permissions for all of your functions can be set here
+        - Effect: Allow
+          Action: # Gives permission to DynamoDB tables
+            - logs:*
+            - dynamodb:*
+            - states:*
+            - events:*
+            - execute-api:*
+          Resource:
+            - "*"
+            - "arn:aws:dynamodb:*:*:*"
+            - "arn:aws:execute-api:*:*:**/@connections/*"
+  websocketsApiName: websockets-api
+  websocketsApiRouteSelectionExpression: $request.body.action
+  logRetentionInDays: 7
+
+functions:
+  - ${file(backend/serverless/lambda.yml)}
+
+resources:
+  - ${file(backend/serverless/dynamodb.yml)}
+  - ${file(backend/serverless/s3-cloudfront.yml)}
+
+custom:
+  dynamodb:
+    stages:
+      - dev
+    start:
+      port: 8000
+      inMemory: true
+      heapInitial: 200m
+      heapMax: 1g
+      migrate: true
+      seed: true
+      convertEmptyValues: true
+  bucketName: stickpoll-frontend
+  s3Sync:
+    - bucketName: ${self:custom.bucketName}
+      localDir: frontend/dist

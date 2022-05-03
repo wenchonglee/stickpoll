@@ -1,0 +1,46 @@
+CreatePoll:
+  handler: backend/handlers/createPollHandler.handler
+  events:
+    - http:
+        method: POST
+        path: /poll
+        cors: true
+GetPoll:
+  handler: backend/handlers/getPollHandler.handler
+  events:
+    - http:
+        method: GET
+        path: /poll/{pollId}
+        cors: true
+VotePoll:
+  handler: backend/handlers/votePollHandler.handler
+  events:
+    - http:
+        method: POST
+        path: /poll/{pollId}/vote
+        cors: true
+OnConnect:
+  handler: backend/handlers/websocketHandler.onConnect
+  events:
+    - websocket:
+        route: $connect
+OnDisconnect:
+  handler: backend/handlers/websocketHandler.onDisconnect
+  events:
+    - websocket:
+        route: $disconnect
+EnterRoom:
+  handler: backend/handlers/websocketHandler.enterRoom
+  events:
+    - websocket:
+        route: enter_room
+ExitRoom:
+  handler: backend/handlers/websocketHandler.exitRoom
+  events:
+    - websocket:
+        route: exit_room
+# SendMessage:
+#   handler: backend/handlers/websocketHandler.sendMessage
+#   events:
+#     - websocket:
+#         route: send_message

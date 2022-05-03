@@ -1,0 +1,27 @@
+Resources:
+  WebSocketTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Connections
+      AttributeDefinitions:
+        - AttributeName: connectionId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: connectionId
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
+  PollTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Polls
+      AttributeDefinitions:
+        - AttributeName: pollId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: pollId
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2

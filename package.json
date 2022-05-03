@@ -1,0 +1,21 @@
+{
+  "private": true,
+  "name": "stickpoll",
+  "workspaces": [
+    "backend",
+    "frontend",
+    "models"
+  ],
+  "scripts": {
+    "start": "serverless offline start"
+  },
+  "dependencies": {
+    "zod": "3.14.4"
+  },
+  "devDependencies": {
+    "typescript": "4.6.3"
+  },
+  "resolutions": {
+    "@types/react": "17.0.33"
+  }
+}
