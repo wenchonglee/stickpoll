@@ -11,7 +11,7 @@ import { DeleteItemCommand } from "@aws-sdk/client-dynamodb";
 import { getConnections } from "./connection";
 import { getPoll } from "./getPoll";
 
-export const broadcastVote = async (targetRoomId: string, targetConnectionId: string) => {
+export const broadcastVote = async (targetRoomId: string) => {
   const connectionData = await getConnections(targetRoomId);
   if (!connectionData?.Items) {
     return;
@@ -26,9 +26,6 @@ export const broadcastVote = async (targetRoomId: string, targetConnectionId: st
 
   const postCalls = connectionData.Items.map(async (item) => {
     const { connectionId } = ConnectionSchema.parse(unmarshall(item));
-    if (connectionId === targetConnectionId) {
-      return;
-    }
 
     try {
       const postCommand = new PostToConnectionCommand({

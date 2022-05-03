@@ -48,3 +48,4 @@ To run this locally, you'll need to install:
 **Build & deploy backend+frontend**
 
 - `sls deploy`
+- `aws cloudfront create-invalidation --distribution-id {distributionID} --paths "/*"`

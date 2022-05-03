@@ -6,7 +6,7 @@ import { votePoll } from "../service/votePoll";
 import { withMiddleware } from "./middleware";
 
 const votePollHandler: CustomLambdaHandler<VotePollForm> = async (event) => {
-  if (!event.pathParameters || !event.requestContext.connectionId) {
+  if (!event.pathParameters) {
     return { statusCode: 500, body: "Invalid body" };
   }
   const { body } = event;
@@ -16,7 +16,7 @@ const votePollHandler: CustomLambdaHandler<VotePollForm> = async (event) => {
     await votePoll(pollId!, body.option, event.requestContext.identity.sourceIp);
 
     //! Not ideal to hold the process for broadcasting, should actually use a queue instead
-    await broadcastVote(pollId!, event.requestContext.connectionId);
+    await broadcastVote(pollId!);
 
     return {
       statusCode: 200,
