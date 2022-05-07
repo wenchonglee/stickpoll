@@ -1,5 +1,6 @@
 import useWebSocket from "react-use-websocket";
 
-const url = "wss://uuul5cihg0.execute-api.ap-southeast-1.amazonaws.com/dev";
-// const url = "ws://localhost:3001";
+const url = import.meta.env.DEV
+  ? "ws://localhost:3001"
+  : "wss://uuul5cihg0.execute-api.ap-southeast-1.amazonaws.com/dev";
 export const usePollSocket = () => useWebSocket(url);
