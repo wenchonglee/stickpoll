@@ -1,12 +1,12 @@
-import { Button, Group, Loader, Radio, RadioGroup, Space } from "@mantine/core";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button, Group, Input, Loader, Radio, RadioGroup, Space, Stack } from "@mantine/core";
+import { VotePollSchema } from "@stickpoll/models";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useGetPoll, usePollSocket, useVotePoll } from "../api";
 
-import { VotePollSchema } from "@stickpoll/models";
-import { zodResolver } from "@hookform/resolvers/zod";
-
-export const Poll = () => {
+export const VotePollForm = () => {
   let { pollId } = useParams();
   const navigate = useNavigate();
 
@@ -29,7 +29,7 @@ export const Poll = () => {
     },
     resolver: zodResolver(VotePollSchema),
   });
-  const { isSubmitting } = formState;
+  const { errors, isSubmitting } = formState;
 
   const submitVote = handleSubmit(async (formData) => {
     await mutateAsync({ data: formData });
@@ -46,7 +46,7 @@ export const Poll = () => {
         control={control}
         name="option"
         render={({ field }) => (
-          <RadioGroup label={data.question} orientation="vertical" {...field}>
+          <RadioGroup label={<h2>{data.question}</h2>} orientation="vertical" error={errors.option?.message} {...field}>
             {Object.keys(data.options).map((option) => (
               <Radio key={option} value={option} label={option} />
             ))}
@@ -56,28 +56,46 @@ export const Poll = () => {
 
       <Space h="xl" />
 
-      <Group>
-        <Button type="submit" onClick={submitVote} loading={isSubmitting}>
-          Vote
-        </Button>
-        <Button variant="white" component={Link} to="results">
-          Results
-        </Button>
-        <Button
-          variant="white"
-          onClick={() => {
-            sendMessage(
-              JSON.stringify({
-                action: "send_message",
-                roomId: pollId,
-              })
-            );
-          }}
-          // leftIcon={<Share size={20} />}
-        >
-          Share
-        </Button>
-      </Group>
+      <Stack>
+        <Group>
+          <Button type="submit" onClick={submitVote} loading={isSubmitting}>
+            Vote
+          </Button>
+
+          <Button variant="default" component={Link} to="results">
+            View Results
+          </Button>
+        </Group>
+        <ShareButton />
+      </Stack>
     </div>
+  );
+};
+
+const ShareButton = () => {
+  const [copied, setCopied] = useState(false);
+
+  return (
+    <Input
+      sx={{
+        maxWidth: "400px",
+      }}
+      readOnly
+      rightSection={
+        <Button
+          onClick={() => {
+            navigator.clipboard.writeText(window.location.href);
+            setCopied(true);
+          }}
+          compact
+          color="teal"
+          variant="outline"
+        >
+          {copied ? "Copied!" : "Copy"}
+        </Button>
+      }
+      value={window.location.href}
+      rightSectionWidth={100}
+    />
   );
 };

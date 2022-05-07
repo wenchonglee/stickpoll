@@ -1,13 +1,12 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ColorScheme, ColorSchemeProvider, MantineProvider } from "@mantine/core";
-import { QueryClient, QueryClientProvider } from "react-query";
-
-import { CreatePollForm } from "./Views/CreatePollForm";
-import { NoMatch } from "./Views/NoMatch";
-import { PageShell } from "./Views/PageShell";
-import { Poll } from "./Views/Poll";
-import { PollResults } from "./Views/PollResults";
 import { useState } from "react";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { CreatePollForm } from "./view/CreatePollForm";
+import { NoMatch } from "./view/NoMatch";
+import { PageShell } from "./view/PageShell";
+import { PollResults } from "./view/PollResults";
+import { VotePollForm } from "./view/VotePollForm";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -37,7 +36,7 @@ function App() {
             <Routes>
               <Route path="/" element={<PageShell />}>
                 <Route index element={<CreatePollForm />} />
-                <Route path=":pollId" element={<Poll />} />
+                <Route path=":pollId" element={<VotePollForm />} />
                 <Route path=":pollId/results" element={<PollResults />} />
               </Route>
 

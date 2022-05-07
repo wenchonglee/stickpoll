@@ -1,17 +1,16 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Button, Input, InputWrapper, Stack, Textarea } from "@mantine/core";
-import { useFieldArray, useForm } from "react-hook-form";
-
 import { PollFormSchema } from "@stickpoll/models";
-import { useCreatePoll } from "../api";
+import { useFieldArray, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useCreatePoll } from "../api";
 
 // Because useFieldArray only support array of objects, we have to alter the schema here
 const RhfPollForm = PollFormSchema.extend({
   options: z.array(
     z.object({
-      value: z.string(),
+      value: z.string().min(1, { message: "Option cannot be empty" }),
     })
   ),
 });
@@ -19,7 +18,7 @@ const RhfPollForm = PollFormSchema.extend({
 export const CreatePollForm = () => {
   const navigate = useNavigate();
   const { mutateAsync } = useCreatePoll();
-  const { register, control, handleSubmit } = useForm({
+  const { register, control, handleSubmit, formState } = useForm({
     defaultValues: {
       question: "",
       options: [
@@ -33,6 +32,7 @@ export const CreatePollForm = () => {
     },
     resolver: zodResolver(RhfPollForm),
   });
+  const { errors, isSubmitting } = formState;
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -58,6 +58,8 @@ export const CreatePollForm = () => {
         required
         label="Ask a question"
         placeholder="E.g. Where should we get dinner?"
+        error={errors.question?.message}
+        disabled={isSubmitting}
         {...register("question")}
       />
 
@@ -77,6 +79,7 @@ export const CreatePollForm = () => {
             Add option
           </Button>
         }
+        error={errors.options ? "There must be at least 2 non-empty options" : undefined}
       >
         <Stack>
           {fields.map((field, index) => (
@@ -91,6 +94,7 @@ export const CreatePollForm = () => {
                 ) : undefined
               }
               rightSectionWidth={100}
+              disabled={isSubmitting}
               {...register(`options.${index}.value`)}
             />
           ))}
@@ -98,7 +102,7 @@ export const CreatePollForm = () => {
       </InputWrapper>
 
       <Box>
-        <Button type="submit" onClick={handleCreatePoll}>
+        <Button type="submit" onClick={handleCreatePoll} loading={isSubmitting}>
           Create poll
         </Button>
       </Box>

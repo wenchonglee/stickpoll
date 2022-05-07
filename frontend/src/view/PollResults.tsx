@@ -1,10 +1,9 @@
 import { Loader, Progress, Stack } from "@mantine/core";
-import { QUERY_KEY_GET_POLL, useGetPoll, usePollSocket } from "../api";
-
 import { PollSchema } from "@stickpoll/models";
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
 import { useQueryClient } from "react-query";
+import { useParams } from "react-router-dom";
+import { QUERY_KEY_GET_POLL, useGetPoll, usePollSocket } from "../api";
 
 export const PollResults = () => {
   let { pollId } = useParams();
@@ -22,7 +21,7 @@ export const PollResults = () => {
     }
   }, [lastMessage]);
 
-  const { data, isLoading } = useGetPoll(pollId!, {
+  const { data } = useGetPoll(pollId!, {
     onSuccess: () => {
       sendMessage(
         JSON.stringify({
