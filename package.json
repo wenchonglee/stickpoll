@@ -10,6 +10,7 @@
     "start": "serverless offline start"
   },
   "dependencies": {
+    "dayjs": "1.11.2",
     "zod": "3.14.4"
   },
   "devDependencies": {

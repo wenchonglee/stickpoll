@@ -1,5 +1,11 @@
-import { Text } from "@mantine/core";
+import { AppShell, Center, Title } from "@mantine/core";
 
 export const NoMatch = () => {
-  return <Text>404</Text>;
+  return (
+    <AppShell padding="xl">
+      <Center>
+        <Title>404 Not Found</Title>
+      </Center>
+    </AppShell>
+  );
 };

@@ -1,9 +1,10 @@
-import { Anchor, AppShell, Grid, Group, Image, Text } from "@mantine/core";
+import { AppShell, Box, Button, Grid, Image, Stack, Text } from "@mantine/core";
 import { Outlet, useMatch } from "react-router-dom";
 import GithubLogo from "../img/github.png";
 
 export const PageShell = () => {
-  const isRootPage = useMatch("/");
+  const pathMatch = useMatch("/");
+  const isRootPage = !!pathMatch;
 
   return (
     <AppShell padding="xl">
@@ -24,35 +25,39 @@ export const PageShell = () => {
           lg={isRootPage ? 6 : 4}
           sx={{
             transition: "max-width 1s",
+            display: "flex",
+            justifyContent: "center",
           }}
         >
-          <Text
-            color="white"
-            sx={{
-              fontSize: isRootPage ? "3rem" : "2rem",
-              lineHeight: "1rem",
-            }}
-            align="center"
-          >
-            <h1>Stickpoll</h1>
-          </Text>
-
-          <Group position="center" spacing="xs">
-            <Anchor href="https://github.com/wenchonglee/stickpoll">
-              <Image src={GithubLogo} width={20} height={20} />
-            </Anchor>
-
+          <Stack spacing="xs">
             <Text
-              size="xs"
-              align="center"
-              color="yellow"
+              color="white"
               sx={{
-                fontStyle: "italic",
+                fontSize: isRootPage ? "3rem" : "2rem",
+                lineHeight: "0rem",
               }}
             >
-              Like strawpoll, but another material, idk
+              <h1>Stickpoll</h1>
             </Text>
-          </Group>
+
+            <Text size="xs" color="yellow">
+              Create public, anonymous polls <br />
+              View results in real time
+            </Text>
+
+            <Box>
+              <Button
+                component="a"
+                href="https://github.com/wenchonglee/stickpoll"
+                variant="subtle"
+                size="xs"
+                color="gray"
+                leftIcon={<Image src={GithubLogo} width={20} height={20} />}
+              >
+                Source code
+              </Button>
+            </Box>
+          </Stack>
         </Grid.Col>
 
         <Grid.Col

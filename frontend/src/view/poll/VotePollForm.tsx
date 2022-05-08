@@ -1,29 +1,18 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Group, Input, Loader, Radio, RadioGroup, Space, Stack } from "@mantine/core";
+import { Box, Button, Group, Radio, RadioGroup, Space, Stack } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import { VotePollSchema } from "@stickpoll/models";
+import { Poll, VotePollSchema } from "@stickpoll/models";
 import axios from "axios";
-import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { useGetPoll, usePollSocket, useVotePoll } from "../api";
+import { Link, useNavigate, useOutletContext, useParams } from "react-router-dom";
+import { useVotePoll } from "../../api";
 
 export const VotePollForm = () => {
   let { pollId } = useParams();
   const navigate = useNavigate();
+  const { data } = useOutletContext<{ data: Poll }>();
 
   const { mutateAsync } = useVotePoll(pollId!);
-  const { sendMessage } = usePollSocket();
-  const { data, isLoading } = useGetPoll(pollId!, {
-    onSuccess: () => {
-      sendMessage(
-        JSON.stringify({
-          action: "enter_room",
-          roomId: pollId,
-        })
-      );
-    },
-  });
 
   const { control, handleSubmit, formState } = useForm({
     defaultValues: {
@@ -51,17 +40,13 @@ export const VotePollForm = () => {
     navigate(`/${pollId}/results`);
   });
 
-  if (!data) {
-    return <Loader variant="bars" color="yellow" />;
-  }
-
   return (
-    <div>
+    <Box>
       <Controller
         control={control}
         name="option"
         render={({ field }) => (
-          <RadioGroup label={<h2>{data.question}</h2>} orientation="vertical" error={errors.option?.message} {...field}>
+          <RadioGroup orientation="vertical" error={errors.option?.message} {...field}>
             {Object.keys(data.options).map((option) => (
               <Radio key={option} value={option} label={option} />
             ))}
@@ -69,6 +54,7 @@ export const VotePollForm = () => {
         )}
       />
 
+      <Space h="xl" />
       <Space h="xl" />
 
       <Stack>
@@ -81,36 +67,7 @@ export const VotePollForm = () => {
             View Results
           </Button>
         </Group>
-        <ShareButton />
       </Stack>
-    </div>
-  );
-};
-
-const ShareButton = () => {
-  const [copied, setCopied] = useState(false);
-
-  return (
-    <Input
-      sx={{
-        maxWidth: "400px",
-      }}
-      readOnly
-      rightSection={
-        <Button
-          onClick={() => {
-            navigator.clipboard.writeText(window.location.href);
-            setCopied(true);
-          }}
-          compact
-          color="teal"
-          variant="outline"
-        >
-          {copied ? "Copied!" : "Copy"}
-        </Button>
-      }
-      value={window.location.href}
-      rightSectionWidth={100}
-    />
+    </Box>
   );
 };

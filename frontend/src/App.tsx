@@ -3,16 +3,18 @@ import { NotificationsProvider } from "@mantine/notifications";
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { CreatePollForm } from "./view/CreatePollForm";
 import { NoMatch } from "./view/NoMatch";
 import { PageShell } from "./view/PageShell";
-import { PollResults } from "./view/PollResults";
-import { VotePollForm } from "./view/VotePollForm";
+import { CreatePollForm } from "./view/poll/CreatePollForm";
+import { PollResults } from "./view/poll/PollResults";
+import { PollShell } from "./view/poll/PollShell";
+import { VotePollForm } from "./view/poll/VotePollForm";
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
+      retry: 0,
     },
   },
 });
@@ -38,8 +40,10 @@ function App() {
               <Routes>
                 <Route path="/" element={<PageShell />}>
                   <Route index element={<CreatePollForm />} />
-                  <Route path=":pollId" element={<VotePollForm />} />
-                  <Route path=":pollId/results" element={<PollResults />} />
+                  <Route path=":pollId" element={<PollShell />}>
+                    <Route index element={<VotePollForm />} />
+                    <Route path="results" element={<PollResults />} />
+                  </Route>
                 </Route>
 
                 <Route path="*" element={<NoMatch />} />

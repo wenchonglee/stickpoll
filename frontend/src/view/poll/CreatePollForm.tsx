@@ -1,11 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Box, Button, Input, InputWrapper, Select, Stack, Text, Textarea } from "@mantine/core";
+import { Box, Button, Input, InputWrapper, Select, Stack, Textarea } from "@mantine/core";
 import { DuplicationCheckEnum, PollFormSchema } from "@stickpoll/models";
-import { forwardRef } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
-import { useCreatePoll } from "../api";
+import { useCreatePoll } from "../../api";
+import { SelectItem } from "../../component/SelectItem";
 
 // Because useFieldArray only support array of objects, we have to alter the schema here
 const RhfPollFormSchema = PollFormSchema.extend({
@@ -17,20 +17,26 @@ const RhfPollFormSchema = PollFormSchema.extend({
 });
 type RhfPollForm = z.infer<typeof RhfPollFormSchema>;
 
+const data = [
+  {
+    label: "IP Address",
+    value: DuplicationCheckEnum.enum.ip_address,
+    description: "Participants are restricted to only 1 vote, based on their IP Address",
+  },
+  {
+    label: "None",
+    value: DuplicationCheckEnum.enum.none,
+    description: "No restrictions, participants can vote multiple times",
+  },
+];
+
 export const CreatePollForm = () => {
   const navigate = useNavigate();
   const { mutateAsync } = useCreatePoll();
   const { register, control, handleSubmit, formState } = useForm<RhfPollForm>({
     defaultValues: {
       question: "",
-      options: [
-        {
-          value: "",
-        },
-        {
-          value: "",
-        },
-      ],
+      options: [{ value: "" }, { value: "" }],
       duplicationCheck: DuplicationCheckEnum.enum.ip_address,
     },
     resolver: zodResolver(RhfPollFormSchema),
@@ -110,18 +116,18 @@ export const CreatePollForm = () => {
         name="duplicationCheck"
         render={({ field: { onChange, onBlur, value } }) => (
           <Select
+            sx={{
+              maxWidth: "400px",
+            }}
             label="Duplication check"
             placeholder="Pick one"
-            itemComponent={SelectItem}
             data={data}
+            itemComponent={SelectItem}
             maxDropdownHeight={400}
             onChange={onChange}
             onBlur={onBlur}
             value={value}
             disabled={isSubmitting}
-            sx={{
-              maxWidth: "400px",
-            }}
           />
         )}
       />
@@ -134,33 +140,3 @@ export const CreatePollForm = () => {
     </Stack>
   );
 };
-
-const data = [
-  {
-    label: "IP Address",
-    value: DuplicationCheckEnum.enum.ip_address,
-    description: "Participants are restricted to only 1 vote, based on their IP Address",
-  },
-  {
-    label: "None",
-    value: DuplicationCheckEnum.enum.none,
-    description: "No restrictions, participants can vote multiple times",
-  },
-];
-
-interface ItemProps extends React.ComponentPropsWithoutRef<"div"> {
-  image: string;
-  label: string;
-  description: string;
-}
-
-const SelectItem = forwardRef<HTMLDivElement, ItemProps>(({ image, label, description, ...others }: ItemProps, ref) => (
-  <div ref={ref} {...others}>
-    <div>
-      <Text size="sm">{label}</Text>
-      <Text size="xs" color="dimmed">
-        {description}
-      </Text>
-    </div>
-  </div>
-));

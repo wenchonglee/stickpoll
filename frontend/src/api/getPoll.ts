@@ -1,13 +1,12 @@
 import { Poll, PollSchema } from "@stickpoll/models";
-import { UseQueryOptions, useQuery } from "react-query";
-
+import { useQuery, UseQueryOptions } from "react-query";
 import { Axios } from "./axiosConfig";
 
 export const QUERY_KEY_GET_POLL = "get_poll";
 
 export const useGetPoll = (
   pollId: string,
-  useQueryOptions: UseQueryOptions<unknown, unknown, Poll, typeof QUERY_KEY_GET_POLL>
+  useQueryOptions?: UseQueryOptions<unknown, unknown, Poll, [typeof QUERY_KEY_GET_POLL, string]>
 ) => {
   const getPoll = async (): Promise<Poll> => {
     const response = await Axios.get(`/poll/${pollId}`);
@@ -16,5 +15,5 @@ export const useGetPoll = (
     return poll;
   };
 
-  return useQuery(QUERY_KEY_GET_POLL, getPoll, useQueryOptions);
+  return useQuery([QUERY_KEY_GET_POLL, pollId], getPoll, useQueryOptions);
 };
