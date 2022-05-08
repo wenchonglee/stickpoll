@@ -73,6 +73,7 @@ export const CreatePollForm = () => {
 
       <Textarea
         required
+        autoComplete="off"
         label="Ask a question"
         placeholder="E.g. Where should we get dinner?"
         error={errors.question?.message}
@@ -102,6 +103,7 @@ export const CreatePollForm = () => {
           {fields.map((field, index) => (
             <Input
               key={field.id}
+              autoComplete="off"
               placeholder={`Option ${index + 1}`}
               rightSection={
                 index > 1 ? (
