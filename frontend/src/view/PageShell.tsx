@@ -1,5 +1,6 @@
 import { Anchor, AppShell, Grid, Group, Header, Stack, Text, Title } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
+import { Helmet } from "react-helmet";
 import { Link, Outlet, useMatch } from "react-router-dom";
 import { GithubLink } from "../component/GithubLink";
 
@@ -32,6 +33,9 @@ export const PageShell = () => {
         ) : undefined
       }
     >
+      <Helmet>
+        <meta name="description" content="Create anonymous polls and view results in real time" />
+      </Helmet>
       <Grid
         justify="center"
         align="flex-start"

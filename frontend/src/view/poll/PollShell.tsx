@@ -1,5 +1,6 @@
 import { Box, Group, Loader, Space, Stack, Text, Title } from "@mantine/core";
 import { useRef } from "react";
+import { Helmet } from "react-helmet";
 import { Outlet, useMatch, useParams } from "react-router-dom";
 import { useGetPoll, usePollSocket } from "../../api";
 import { ShareButton } from "../../component/ShareButton";
@@ -34,6 +35,10 @@ export const PollShell = () => {
 
   return (
     <Box>
+      <Helmet>
+        <meta name="description" content={data.question} />
+      </Helmet>
+
       <Title order={2}>{data.question}</Title>
       <Group align="flex-end" sx={{ gap: "0px" }}>
         <Text size="xs" color="dimmed">
