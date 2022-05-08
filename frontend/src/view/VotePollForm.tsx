@@ -1,6 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Group, Input, Loader, Radio, RadioGroup, Space, Stack } from "@mantine/core";
+import { showNotification } from "@mantine/notifications";
 import { VotePollSchema } from "@stickpoll/models";
+import axios from "axios";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -32,7 +34,20 @@ export const VotePollForm = () => {
   const { errors, isSubmitting } = formState;
 
   const submitVote = handleSubmit(async (formData) => {
-    await mutateAsync({ data: formData });
+    await mutateAsync(
+      { data: formData },
+      {
+        onError: (error) => {
+          if (axios.isAxiosError(error)) {
+            showNotification({
+              title: "Something went wrong",
+              message: error.response?.data,
+              color: "red",
+            });
+          }
+        },
+      }
+    );
     navigate(`/${pollId}/results`);
   });
 

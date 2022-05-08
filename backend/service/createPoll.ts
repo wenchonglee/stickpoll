@@ -1,10 +1,14 @@
-import { PollsTableName, ddbClient } from "../utils";
-
 import { PutItemCommand } from "@aws-sdk/client-dynamodb";
 import { marshall } from "@aws-sdk/util-dynamodb";
+import { PollForm } from "@stickpoll/models";
 import { nanoid } from "nanoid";
+import { ddbClient, PollsTableName } from "../utils";
 
-export const createPoll = async (options: string[], question: string) => {
+export const createPoll = async (
+  options: PollForm["options"],
+  question: PollForm["question"],
+  duplicationCheck: PollForm["duplicationCheck"]
+) => {
   const pollId = nanoid();
 
   let optionsObject: Record<string, number> = {};
@@ -18,6 +22,7 @@ export const createPoll = async (options: string[], question: string) => {
       question,
       options: optionsObject,
       voters: [],
+      duplicationCheck,
     }),
     ConditionExpression: "attribute_not_exists(pollId)",
   });

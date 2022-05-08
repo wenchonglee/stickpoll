@@ -1,9 +1,10 @@
+import { ConditionalCheckFailedException } from "@aws-sdk/client-dynamodb";
 import { VotePollForm, VotePollSchema } from "@stickpoll/models";
-
-import { CustomLambdaHandler } from "./types";
+import createHttpError from "http-errors";
 import { broadcastVote } from "../service/broadcastVote";
 import { votePoll } from "../service/votePoll";
 import { withMiddleware } from "./middleware";
+import { CustomLambdaHandler } from "./types";
 
 const votePollHandler: CustomLambdaHandler<VotePollForm> = async (event) => {
   if (!event.pathParameters) {
@@ -23,6 +24,9 @@ const votePollHandler: CustomLambdaHandler<VotePollForm> = async (event) => {
       body: "",
     };
   } catch (e) {
+    if (e instanceof ConditionalCheckFailedException) {
+      throw createHttpError(400, "You cannot vote more than once");
+    }
     console.error(e);
 
     return { statusCode: 500, body: "Something went wrong" };

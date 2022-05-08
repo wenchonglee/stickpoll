@@ -1,8 +1,7 @@
 import createHttpError, { isHttpError } from "http-errors";
-
-import { CustomLambdaHandler } from "./types";
 import { getPoll } from "../service/getPoll";
 import { withMiddleware } from "./middleware";
+import { CustomLambdaHandler } from "./types";
 
 const getPollHandler: CustomLambdaHandler = async (event) => {
   if (!event.pathParameters || !event.pathParameters.pollId) {

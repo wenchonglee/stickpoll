@@ -1,4 +1,5 @@
 import { ColorScheme, ColorSchemeProvider, MantineProvider } from "@mantine/core";
+import { NotificationsProvider } from "@mantine/notifications";
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -32,17 +33,19 @@ function App() {
           withGlobalStyles
           withNormalizeCSS
         >
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<PageShell />}>
-                <Route index element={<CreatePollForm />} />
-                <Route path=":pollId" element={<VotePollForm />} />
-                <Route path=":pollId/results" element={<PollResults />} />
-              </Route>
+          <NotificationsProvider>
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<PageShell />}>
+                  <Route index element={<CreatePollForm />} />
+                  <Route path=":pollId" element={<VotePollForm />} />
+                  <Route path=":pollId/results" element={<PollResults />} />
+                </Route>
 
-              <Route path="*" element={<NoMatch />} />
-            </Routes>
-          </BrowserRouter>
+                <Route path="*" element={<NoMatch />} />
+              </Routes>
+            </BrowserRouter>
+          </NotificationsProvider>
         </MantineProvider>
       </ColorSchemeProvider>
     </QueryClientProvider>
