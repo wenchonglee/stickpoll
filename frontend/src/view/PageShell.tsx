@@ -34,7 +34,7 @@ export const PageShell = () => {
       }
     >
       <Helmet>
-        <meta name="description" content="Create anonymous polls and view results in real time" />
+        <meta name="og:description" content="Create anonymous polls and view results in real time" />
       </Helmet>
       <Grid
         justify="center"

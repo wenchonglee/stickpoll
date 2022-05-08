@@ -36,7 +36,7 @@ export const PollShell = () => {
   return (
     <Box>
       <Helmet>
-        <meta name="description" content={data.question} />
+        <meta name="og:description" content={data.question} />
       </Helmet>
 
       <Title order={2}>{data.question}</Title>
