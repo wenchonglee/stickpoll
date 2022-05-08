@@ -21,7 +21,7 @@ export const ShareButton = () => {
               setCopied(true);
             }}
             compact
-            color="teal"
+            color="yellow"
             variant="outline"
           >
             {copied ? "Copied!" : "Copy"}

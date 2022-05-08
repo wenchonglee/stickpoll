@@ -1,64 +1,79 @@
-import { AppShell, Box, Button, Grid, Image, Stack, Text } from "@mantine/core";
-import { Outlet, useMatch } from "react-router-dom";
-import GithubLogo from "../img/github.png";
+import { Anchor, AppShell, Grid, Group, Header, Stack, Text, Title } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
+import { Link, Outlet, useMatch } from "react-router-dom";
+import { GithubLink } from "../component/GithubLink";
 
 export const PageShell = () => {
   const pathMatch = useMatch("/");
   const isRootPage = !!pathMatch;
+  const isSmallWidth = useMediaQuery("(max-width: 800px)");
 
   return (
-    <AppShell padding="xl">
+    <AppShell
+      padding={isSmallWidth ? "md" : "xl"}
+      header={
+        isSmallWidth ? (
+          <Header height={64} p="md">
+            <Group position="apart">
+              <Anchor component={Link} to="/">
+                <Title
+                  order={2}
+                  sx={{
+                    color: "white",
+                  }}
+                >
+                  Stickpoll
+                </Title>
+              </Anchor>
+
+              <GithubLink />
+            </Group>
+          </Header>
+        ) : undefined
+      }
+    >
       <Grid
         justify="center"
         align="flex-start"
         sx={(theme) => ({
           padding: theme.spacing.md,
           marginTop: "0px",
+          "@media (max-width: 800px)": {
+            padding: "0px",
+          },
           "@media (min-width: 1201px)": {
             padding: "128px",
-            marginTop: "128px",
+            marginTop: "64px",
           },
         })}
       >
-        <Grid.Col
-          md={12}
-          lg={isRootPage ? 6 : 4}
-          sx={{
-            transition: "max-width 1s",
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <Stack spacing="xs">
-            <Text
-              color="white"
-              sx={{
-                fontSize: isRootPage ? "3rem" : "2rem",
-                lineHeight: "0rem",
-              }}
-            >
-              <h1>Stickpoll</h1>
-            </Text>
+        {!isSmallWidth && (
+          <Grid.Col
+            md={12}
+            lg={isRootPage ? 6 : 4}
+            sx={{
+              transition: "max-width 1s",
+              display: "flex",
+              justifyContent: isSmallWidth ? "flex-start" : "center",
+            }}
+          >
+            <Stack spacing="xs">
+              <Anchor component={Link} to="/">
+                <Text
+                  color="white"
+                  sx={{
+                    fontSize: isRootPage ? "3rem" : "2rem",
+                    lineHeight: "0rem",
+                  }}
+                >
+                  <h1>Stickpoll</h1>
+                </Text>
+              </Anchor>
 
-            <Text size="xs" color="yellow">
-              Create public, anonymous polls <br />
-              View results in real time
-            </Text>
-
-            <Box>
-              <Button
-                component="a"
-                href="https://github.com/wenchonglee/stickpoll"
-                variant="subtle"
-                size="xs"
-                color="gray"
-                leftIcon={<Image src={GithubLogo} width={20} height={20} />}
-              >
-                Source code
-              </Button>
-            </Box>
-          </Stack>
-        </Grid.Col>
+              <GithubLink />
+            </Stack>
+          </Grid.Col>
+        )}
 
         <Grid.Col
           md={12}

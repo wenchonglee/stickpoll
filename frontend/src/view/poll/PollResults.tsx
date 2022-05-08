@@ -1,4 +1,4 @@
-import { Box, Button, Space, Stack } from "@mantine/core";
+import { Box, Button, Group, Space, Stack } from "@mantine/core";
 import { Poll, PollSchema } from "@stickpoll/models";
 import { useEffect } from "react";
 import { useQueryClient } from "react-query";
@@ -38,9 +38,14 @@ export const PollResults = () => {
       <Space h="sm" />
 
       <Box>
-        <Button variant="default" component={Link} to="..">
-          Return to vote page
-        </Button>
+        <Group>
+          <Button variant="default" component={Link} to="..">
+            Return to vote page
+          </Button>
+          <Button variant="default" component={Link} to="/">
+            Create another poll
+          </Button>
+        </Group>
       </Box>
     </Stack>
   );

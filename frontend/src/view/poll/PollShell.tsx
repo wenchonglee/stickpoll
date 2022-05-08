@@ -1,9 +1,9 @@
 import { Box, Group, Loader, Space, Stack, Text, Title } from "@mantine/core";
-import dayjs from "dayjs";
 import { useRef } from "react";
 import { Outlet, useMatch, useParams } from "react-router-dom";
 import { useGetPoll, usePollSocket } from "../../api";
 import { ShareButton } from "../../component/ShareButton";
+import { dayjs } from "../../utils";
 
 export const PollShell = () => {
   let { pollId } = useParams();
@@ -37,7 +37,7 @@ export const PollShell = () => {
       <Title order={2}>{data.question}</Title>
       <Group align="flex-end" sx={{ gap: "0px" }}>
         <Text size="xs" color="dimmed">
-          Created at {dayjs(data.createdAt).format("DD MMM YYYY")}
+          Created {dayjs(data.createdAt).fromNow()}
         </Text>
 
         {isResultsPage && (

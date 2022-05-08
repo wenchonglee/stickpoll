@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Box, Button, Input, InputWrapper, Select, Stack, Textarea } from "@mantine/core";
+import { Box, Button, Input, InputWrapper, Select, Stack, Text, Textarea, Title } from "@mantine/core";
 import { DuplicationCheckEnum, PollFormSchema } from "@stickpoll/models";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -64,6 +64,13 @@ export const CreatePollForm = () => {
 
   return (
     <Stack>
+      <Box>
+        <Title order={2}>Create a poll</Title>
+        <Text size="sm" color="yellow">
+          Polls are anonymous and you can view results in real time
+        </Text>
+      </Box>
+
       <Textarea
         required
         label="Ask a question"

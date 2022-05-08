@@ -12,7 +12,11 @@ export const PollResultCard = ({
   const value = totalVoteCount !== 0 ? (voteCount / totalVoteCount) * 100 : 0;
 
   return (
-    <Box>
+    <Box
+      sx={{
+        maxWidth: "800px",
+      }}
+    >
       <Group position="apart" noWrap align="flex-end">
         <Text>{label}</Text>
         <Text
