@@ -15,7 +15,7 @@ export const PollResults = () => {
     if (lastMessage) {
       try {
         const newPollResults = PollSchema.parse(JSON.parse(lastMessage.data));
-        queryClient.setQueryData(QUERY_KEY_GET_POLL, newPollResults);
+        queryClient.setQueryData([QUERY_KEY_GET_POLL, newPollResults.pollId], newPollResults);
       } catch (e) {
         console.warn("Something went wrong");
       }
