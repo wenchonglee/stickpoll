@@ -1,7 +1,8 @@
 import createHttpError, { isHttpError } from "http-errors";
+
+import { CustomLambdaHandler } from "./types";
 import { getPoll } from "../service/getPoll";
 import { withMiddleware } from "./middleware";
-import { CustomLambdaHandler } from "./types";
 
 const getPollHandler: CustomLambdaHandler = async (event) => {
   if (!event.pathParameters || !event.pathParameters.pollId) {
@@ -11,11 +12,11 @@ const getPollHandler: CustomLambdaHandler = async (event) => {
   const { pollId } = event.pathParameters;
 
   try {
-    const data = await getPoll(pollId);
+    const poll = await getPoll(pollId);
 
     return {
       statusCode: 200,
-      body: data,
+      body: JSON.stringify(poll),
     };
   } catch (e) {
     if (isHttpError(e)) {

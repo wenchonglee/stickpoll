@@ -1,7 +1,8 @@
+import { PollsTableName, STICK_POLL_SALT, ddbClient } from "../../utils/config";
+
 import { UpdateItemCommand } from "@aws-sdk/client-dynamodb";
-import { marshall } from "@aws-sdk/util-dynamodb";
 import { createHmac } from "crypto";
-import { ddbClient, PollsTableName, STICK_POLL_SALT } from "../utils";
+import { marshall } from "@aws-sdk/util-dynamodb";
 
 export const votePoll = async (pollId: string, option: string, identity: string) => {
   const hashedIP = createHmac("md5", STICK_POLL_SALT).update(identity).digest("hex");

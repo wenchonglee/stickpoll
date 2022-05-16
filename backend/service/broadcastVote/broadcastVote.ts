@@ -3,18 +3,21 @@ import {
   ApiGatewayManagementApiServiceException,
   PostToConnectionCommand,
 } from "@aws-sdk/client-apigatewaymanagementapi";
-import { ConnectionsTableName, ddbClient, websocketEndpoint } from "../utils";
-import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
+import { deleteConnection, getConnections } from "../connection";
 
-import { ConnectionSchema } from "../model";
-import { DeleteItemCommand } from "@aws-sdk/client-dynamodb";
-import { getConnections } from "./connection";
-import { getPoll } from "./getPoll";
+import { getPoll } from "../getPoll";
+import { websocketEndpoint } from "../../utils/config";
+
+export enum Broadcast_Outcome {
+  Notified,
+  Deleted_Stale,
+  Error_Thrown,
+}
 
 export const broadcastVote = async (targetRoomId: string) => {
-  const connectionData = await getConnections(targetRoomId);
-  if (!connectionData?.Items) {
-    return;
+  const connections = await getConnections(targetRoomId);
+  if (connections === null || connections.length === 0) {
+    return [];
   }
 
   const apigwManagementApi = new ApiGatewayManagementApi({
@@ -24,33 +27,30 @@ export const broadcastVote = async (targetRoomId: string) => {
 
   const poll = await getPoll(targetRoomId);
 
-  const postCalls = connectionData.Items.map(async (item) => {
-    const { connectionId } = ConnectionSchema.parse(unmarshall(item));
+  const postCalls = connections.map(async (connection) => {
+    const { connectionId } = connection;
 
     try {
       const postCommand = new PostToConnectionCommand({
         ConnectionId: connectionId,
         //@ts-ignore
-        Data: poll,
+        Data: JSON.stringify(poll),
       });
 
       await apigwManagementApi.send(postCommand);
+      return Broadcast_Outcome.Notified;
     } catch (e) {
       if (e instanceof ApiGatewayManagementApiServiceException && e.$metadata.httpStatusCode === 410) {
         console.log(`Found stale connection, deleting ${connectionId}`);
-        const deleteCommand = new DeleteItemCommand({
-          TableName: ConnectionsTableName,
-          Key: marshall({
-            connectionId,
-          }),
-        });
 
-        await ddbClient.send(deleteCommand);
+        await deleteConnection(connectionId);
+        return Broadcast_Outcome.Deleted_Stale;
       } else {
         console.error(e);
       }
+      return Broadcast_Outcome.Error_Thrown;
     }
   });
 
-  await Promise.all(postCalls);
+  return await Promise.all(postCalls);
 };

@@ -1,17 +1,21 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Button, Input, InputWrapper, Select, Stack, Text, Textarea, Title } from "@mantine/core";
-import { DuplicationCheckEnum, PollFormSchema } from "@stickpoll/models";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { DuplicationCheckEnum, PollFormSchema } from "@stickpoll/models";
+
+import { SelectItem } from "../../component/SelectItem";
+import { useCreatePoll } from "../../api";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
-import { useCreatePoll } from "../../api";
-import { SelectItem } from "../../component/SelectItem";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 // Because useFieldArray only support array of objects, we have to alter the schema here
 const RhfPollFormSchema = PollFormSchema.extend({
   options: z.array(
     z.object({
-      value: z.string().min(1, { message: "Option cannot be empty" }),
+      value: z
+        .string()
+        .min(1, { message: "Option cannot be empty" })
+        .max(255, { message: "Option cannot be longer than 255 characters" }),
     })
   ),
 });
@@ -97,7 +101,11 @@ export const CreatePollForm = () => {
             Add option
           </Button>
         }
-        error={errors.options ? "There must be at least 2 non-empty options" : undefined}
+        error={
+          errors.options
+            ? "There must be at least 2 non-empty options and they cannot be longer than 255 characters"
+            : undefined
+        }
       >
         <Stack>
           {fields.map((field, index) => (

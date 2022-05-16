@@ -13,8 +13,11 @@ export const PollSchema = z.object({
 export type Poll = z.infer<typeof PollSchema>;
 
 export const PollFormSchema = z.object({
-  question: z.string().min(1, { message: "Question cannot be empty" }),
-  options: z.array(z.string()),
+  question: z
+    .string()
+    .min(1, { message: "Question cannot be empty" })
+    .max(255, { message: "Question cannot be longer than 255 characters" }),
+  options: z.array(z.string().min(1).max(255)),
   duplicationCheck: DuplicationCheckEnum,
 });
 export type PollForm = z.infer<typeof PollFormSchema>;

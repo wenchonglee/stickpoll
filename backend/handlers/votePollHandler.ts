@@ -1,9 +1,10 @@
-import { ConditionalCheckFailedException } from "@aws-sdk/client-dynamodb";
 import { VotePollForm, VotePollSchema } from "@stickpoll/models";
-import { broadcastVote } from "../service/broadcastVote";
+
+import { ConditionalCheckFailedException } from "@aws-sdk/client-dynamodb";
+import { CustomLambdaHandler } from "./types";
+import { broadcastVote } from "../service/broadcastVote/broadcastVote";
 import { votePoll } from "../service/votePoll";
 import { withMiddleware } from "./middleware";
-import { CustomLambdaHandler } from "./types";
 
 const votePollHandler: CustomLambdaHandler<VotePollForm> = async (event) => {
   if (!event.pathParameters) {

@@ -34,13 +34,3 @@ EnterRoom:
   events:
     - websocket:
         route: enter_room
-ExitRoom:
-  handler: backend/handlers/websocketHandler.exitRoom
-  events:
-    - websocket:
-        route: exit_room
-# SendMessage:
-#   handler: backend/handlers/websocketHandler.sendMessage
-#   events:
-#     - websocket:
-#         route: send_message

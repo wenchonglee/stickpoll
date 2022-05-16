@@ -1,8 +1,9 @@
-import { ConnectionsTableName, ddbClient } from "../utils";
+import { ConnectionsTableName, ddbClient } from "../../utils/config";
 import { DeleteItemCommand, PutItemCommand, ScanCommand } from "@aws-sdk/client-dynamodb";
+import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 
-import createHttpError from "http-errors";
-import { marshall } from "@aws-sdk/util-dynamodb";
+import { ConnectionSchema } from "../../utils/model";
+import { genericError } from "../../utils/errors";
 
 export const createConnection = async (connectionId: string) => {
   const putCommand = new PutItemCommand({
@@ -17,7 +18,7 @@ export const createConnection = async (connectionId: string) => {
   } catch (e) {
     console.error(e);
 
-    throw createHttpError(500, "Something went wrong");
+    throw genericError;
   }
 };
 
@@ -34,7 +35,7 @@ export const deleteConnection = async (connectionId: string) => {
   } catch (e) {
     console.error(e);
 
-    throw createHttpError(500, "Something went wrong");
+    throw genericError;
   }
 };
 
@@ -51,24 +52,8 @@ export const updateConnectionEnterRoom = async (connectionId: string, roomId: st
     await ddbClient.send(putCommand);
   } catch (e) {
     console.error(e);
-    throw createHttpError(500, "Something went wrong");
-  }
-};
 
-export const updateConnectionExitRoom = async (connectionId: string, roomId: string) => {
-  const deleteCommand = new DeleteItemCommand({
-    TableName: ConnectionsTableName,
-    Key: marshall({
-      connectionId,
-      roomId,
-    }),
-  });
-
-  try {
-    await ddbClient.send(deleteCommand);
-  } catch (e) {
-    console.error(e);
-    throw createHttpError(500, "Something went wrong");
+    throw genericError;
   }
 };
 
@@ -87,8 +72,13 @@ export const getConnections = async (roomId: string) => {
   try {
     const connections = await ddbClient.send(scanCommand);
 
-    return connections;
+    if (!connections?.Items) {
+      return null;
+    }
+
+    return connections.Items.map((item) => ConnectionSchema.parse(unmarshall(item)));
   } catch (e) {
     console.error(e);
+    return null;
   }
 };
