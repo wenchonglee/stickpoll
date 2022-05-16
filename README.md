@@ -1,6 +1,8 @@
 # [Stickpoll](https://d2ysacn0svi6t1.cloudfront.net/)
 
-A full stack webapp that clones strawpoll and other poll webapps
+![CI](https://github.com/wenchonglee/stickpoll/actions/workflows/ci.yml/badge.svg)
+
+A full stack webapp clone of strawpoll
 
 ## Tech Stack
 
@@ -10,18 +12,23 @@ Organized using yarn workspaces
 
 - Serverless
 - AWS Lambda (Node14)
-  - Middy
+  - [Middy](https://github.com/middyjs/middy)
   - Webpack
 - AWS DynamoDB
+
+Websocket uses [AWS API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api.html)
 
 ### Frontend
 
 - AWS Cloudfront (deployment)
 - Reactjs
-  - Vite
-  - Mantine
-  - React-query
-  - React-router-dom
+  - [Vite](https://github.com/vitejs/vite)
+  - [Mantine](https://github.com/mantinedev/mantine/)
+  - [React-query](https://github.com/tannerlinsley/react-query)
+
+### Models
+
+- [Zod](https://github.com/colinhacks/zod)
 
 ## Local Setup
 
@@ -37,13 +44,13 @@ To run this locally, you'll need to install:
 `yarn start`, or `sls offline start`
 
 **Local frontend**  
-`cd frontend && yarn start`
+`yarn workspace frontend start`
 
 ## Deploying
 
 **Build frontend**
 
-- `cd frontend && yarn build`
+- `yarn workspace frontend build`
 
 **Build & deploy backend+frontend**
 
