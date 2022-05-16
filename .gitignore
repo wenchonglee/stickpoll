@@ -29,5 +29,6 @@ dist-ssr
 .webpack
 
 backend/.build
+backend/coverage
 frontend/dist
 models/buildcache
